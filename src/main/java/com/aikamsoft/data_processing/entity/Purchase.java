@@ -1,6 +1,7 @@
 package com.aikamsoft.data_processing.entity;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -9,27 +10,25 @@ public class Purchase {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "purchase_id")
+    @Column(name = "ID", nullable = false)
     private Long id;
-    @Column(name = "TITLE")
+    @Column(name = "TITLE", nullable = false)
     private String title;
-    @Column(name = "PRICE")
+    @Column(name = "PRICE", nullable = false)
     private Long price;
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id")
-    private Product product;
+    @ManyToOne
+    private Buyer buyer;
 
+    @ManyToMany
+    @JoinTable(
+            name = "purchase_product",
+            joinColumns = @JoinColumn(name = "purchase_id"),
+            inverseJoinColumns = @JoinColumn(name = "product_id")
+    )
+    private List<Product> products;
 
     public Purchase() {
-    }
-
-
-    public Purchase(Long id, String title, Long price, Product product) {
-        this.id = id;
-        this.title = title;
-        this.price = price;
-        this.product = product;
     }
 
     public Long getId() {
@@ -56,27 +55,35 @@ public class Purchase {
         this.price = price;
     }
 
-    public Product getProduct() {
-        return product;
+    public Buyer getBuyer() {
+        return buyer;
     }
 
-    public void setProduct(Product product) {
-        this.product = product;
+    public void setBuyer(Buyer buyer) {
+        this.buyer = buyer;
     }
+
+    public List<Product> getProducts() {
+        return products;
+    }
+
+    public void setProducts(List<Product> products) {
+        this.products = products;
+    }
+
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Purchase purchase = (Purchase) o;
-        return Objects.equals(id, purchase.id) && Objects.equals(title, purchase.title) && Objects.equals(price, purchase.price) && Objects.equals(product, purchase.product);
+        return Objects.equals(id, purchase.id) && Objects.equals(title, purchase.title) && Objects.equals(price, purchase.price) && Objects.equals(buyer, purchase.buyer) && Objects.equals(products, purchase.products);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, title, price, product);
+        return Objects.hash(id, title, price, buyer, products);
     }
-
 
     @Override
     public String toString() {
@@ -84,7 +91,8 @@ public class Purchase {
                 "id=" + id +
                 ", title='" + title + '\'' +
                 ", price=" + price +
-                ", product=" + product +
+                ", buyer=" + buyer +
+                ", products=" + products +
                 '}';
     }
 }

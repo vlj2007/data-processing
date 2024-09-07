@@ -10,24 +10,17 @@ public class Product {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "product_id")
+    @Column(name = "ID", nullable = false)
     private Long id;
-    @Column(name = "NAME")
+    @Column(name = "NAME", nullable = false)
     private String name;
-    @Column(name = "PRICE")
+    @Column(name = "PRICE", nullable = false)
     private Long price;
 
-    @ManyToOne
-    private List<Buyer> buyers;
+    @ManyToMany(mappedBy = "products")
+    private List<Purchase> purchases;
 
     public Product() {
-    }
-
-    public Product(Long id, String name, Long price, List<Buyer> buyers) {
-        this.id = id;
-        this.name = name;
-        this.price = price;
-        this.buyers = buyers;
     }
 
     public Long getId() {
@@ -54,25 +47,26 @@ public class Product {
         this.price = price;
     }
 
-    public List<Buyer> getBuyers() {
-        return buyers;
+    public List<Purchase> getPurchases() {
+        return purchases;
     }
 
-    public void setBuyers(List<Buyer> buyers) {
-        this.buyers = buyers;
+    public void setPurchases(List<Purchase> purchases) {
+        this.purchases = purchases;
     }
+
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Product product = (Product) o;
-        return Objects.equals(id, product.id) && Objects.equals(name, product.name) && Objects.equals(price, product.price) && Objects.equals(buyers, product.buyers);
+        return Objects.equals(id, product.id) && Objects.equals(name, product.name) && Objects.equals(price, product.price) && Objects.equals(purchases, product.purchases);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, price, buyers);
+        return Objects.hash(id, name, price, purchases);
     }
 
     @Override
@@ -81,7 +75,7 @@ public class Product {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", price=" + price +
-                ", buyers=" + buyers +
+                ", purchases=" + purchases +
                 '}';
     }
 }

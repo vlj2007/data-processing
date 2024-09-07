@@ -1,6 +1,7 @@
 package com.aikamsoft.data_processing.entity;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -9,24 +10,17 @@ public class Buyer {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ID", nullable = false)
     private Long id;
-    @Column(name = "NAME")
+    @Column(name = "NAME", nullable = false)
     private String name;
-    @Column(name = "SURNAME")
+    @Column(name = "SURNAME", nullable = false)
     private String surname;
 
-    @OneToMany(fetch = FetchType.LAZY)
-    @JoinColumn(name = "purchase_id")
-    private Purchase purchase;
+    @OneToMany(mappedBy = "buyer", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Purchase> purchases;
 
     public Buyer() {
-    }
-
-    public Buyer(Long id, String name, String surname, Purchase purchase) {
-        this.id = id;
-        this.name = name;
-        this.surname = surname;
-        this.purchase = purchase;
     }
 
     public Long getId() {
@@ -53,12 +47,12 @@ public class Buyer {
         this.surname = surname;
     }
 
-    public Purchase getPurchase() {
-        return purchase;
+    public List<Purchase> getPurchases() {
+        return purchases;
     }
 
-    public void setPurchase(Purchase purchase) {
-        this.purchase = purchase;
+    public void setPurchases(List<Purchase> purchases) {
+        this.purchases = purchases;
     }
 
     @Override
@@ -66,12 +60,12 @@ public class Buyer {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Buyer buyer = (Buyer) o;
-        return Objects.equals(id, buyer.id) && Objects.equals(name, buyer.name) && Objects.equals(surname, buyer.surname) && Objects.equals(purchase, buyer.purchase);
+        return Objects.equals(id, buyer.id) && Objects.equals(name, buyer.name) && Objects.equals(surname, buyer.surname) && Objects.equals(purchases, buyer.purchases);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, surname, purchase);
+        return Objects.hash(id, name, surname, purchases);
     }
 
     @Override
@@ -80,7 +74,7 @@ public class Buyer {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", surname='" + surname + '\'' +
-                ", purchase=" + purchase +
+                ", purchases=" + purchases +
                 '}';
     }
 }
